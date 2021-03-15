@@ -105,10 +105,10 @@ def main(USERNAME,PASSWORD,download_dir=None):
     driver=mydriver.setupbrowser(mydriver(download_dir))
     home=hcm(driver,un=USERNAME,pw=PASSWORD)
     home.loginnow()
-    cjr=cjr(home.driver)
-    cjr.nav()
-    cjr.run_current()
-    cjr.driver.quit()   #using quit instead of close because 2 windows.
+    thecjr=cjr(home.driver)
+    thecjr.nav()
+    thecjr.run_current()
+    thecjr.driver.quit()   #using quit instead of close because 2 windows.
 
 if __name__ == "__main__":
     main(USERNAME,PASSWORD,download_dir=DIR)    
