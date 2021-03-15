@@ -4,8 +4,8 @@ Created on Thu Mar 11 17:02:20 2021
 
 @author: shane
 """
-from src.seltools import mydriver,main
-from src.HCM_main import hcm
+from seltools import mydriver,main
+from HCM_main import hcm
 from datetime import datetime
 from selenium.webdriver.common.by import By
 
@@ -96,6 +96,7 @@ class cjr(hcm,main):
         self.waitid("PRCSRQSTDLG_WRK_LOADRPTLIST")
         print("now navigating to get the report")
         self.report_get(id=instance)
+        
 def main(USERNAME,PASSWORD,download_dir=None):
     if download_dir:
         download_dir=download_dir
@@ -110,4 +111,4 @@ def main(USERNAME,PASSWORD,download_dir=None):
     cjr.driver.quit()   #using quit instead of close because 2 windows.
 
 if __name__ == "__main__":
-    main(USERNAME,PASSWORD)    
+    main(USERNAME,PASSWORD,download_dir=DIR)    
