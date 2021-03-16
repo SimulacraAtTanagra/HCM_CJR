@@ -8,6 +8,7 @@ from seltools import mydriver,main
 from HCM_main import hcm
 from datetime import datetime
 from selenium.webdriver.common.by import By
+import os
 
 class cjr(hcm,main):
     def __init__(self,driver):
@@ -49,7 +50,10 @@ class cjr(hcm,main):
                     print('got one!')
                     urls[ix].click()
             #TODO add error handling here. What happens if we miss the instance?
+            x=self.waittext('URL$1')
             self.waitid('URL$1')
+            return(x)
+        #TODO get report name. This can be used to validate that a file has been downloaded
     def run_current(self,datadict=None,date=None):
         self.cf_save(1)
         self.switch_tar()   #what we want is in the Target Content frame
@@ -100,7 +104,8 @@ class cjr(hcm,main):
             instance='0'
         self.waitid("PRCSRQSTDLG_WRK_LOADRPTLIST")
         print("now navigating to get the report")
-        self.report_get(id=instance)
+        return(self.report_get(id=instance))
+        
         
 def main(USERNAME,PASSWORD,download_dir=None):
     if download_dir:
@@ -112,7 +117,12 @@ def main(USERNAME,PASSWORD,download_dir=None):
     home.loginnow()
     thecjr=cjr(home.driver)
     thecjr.nav()
-    thecjr.run_current()
+    fname=thecjr.run_current()
+    while True:
+        if os.path.isfile(os.path.join(download_dir,fname)):
+            break
+    else:
+        thecjr.driver.quit()
     #thecjr.driver.quit()   #using quit instead of close because 2 windows.
 
 if __name__ == "__main__":
