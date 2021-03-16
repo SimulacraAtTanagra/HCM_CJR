@@ -16,6 +16,7 @@ class cjr(hcm,main):
     def report_get(self,id=None):
         if id:
             id=id
+        #TODO add error handling here. Perhaps look in Administration for 'processing'
         if self.driver.title!='Report Manager':
             self.driver.get('https://hrsa.cunyfirst.cuny.edu/psp/cnyhcprd_2/EMPLOYEE/HRMS/c/REPORT_MANAGER.CONTENT_LIST.GBL')
         #because the table's identity isprocedurally generated, must grab individually
@@ -31,18 +32,21 @@ class cjr(hcm,main):
                 print('clicking refresh')
                 self.cf_save(1)
                 self.switch_tar()
-        print('done checking, apparently')
-        if flag=='go':
+        else:
+            print('done checking, apparently')
             self.switch_tar()
             print('trying to grab table')
             table=self.grab_table('',obj=self.driver.find_element(By.CLASS_NAME,'PSLEVEL1GRID'))
             #each row in this table has 7 pieces of information, so we'll split into groups
             #and search for our instance number
             urls=table[1::7]
+            print(urls)
             instances=[i.text for i in table[6::7]]
+            print(instances)
             #urls are in the second column and instances are in the second to last.
             for ix,i in enumerate(instances):
                 if i==id:
+                    print('got one!')
                     urls[ix].click()
             #TODO add error handling here. What happens if we miss the instance?
             self.waitid('URL$1')
@@ -55,11 +59,11 @@ class cjr(hcm,main):
         #for best results, we are doing as of today, always, Full Report
         #all fields other than Business Unit blank
         #if you've run this before, it shuld still have the prior details
-        if date:
+        if date!=None:
             date=date
         else:
             date=datetime.now().strftime('%m/%d/%Y')
-        if datadict:
+        if datadict!=None:
             datadict=datadict
         else:
             datadict={'CU_R1013_RUNCNT_ASOFDATE': date,
@@ -76,6 +80,7 @@ class cjr(hcm,main):
              'PRCSRQSTDLG_WRK_OUTDESTTYPE$0':'Web',
              'PRCSRQSTDLG_WRK_OUTDESTFORMAT$0':'XLS'
                     }
+        self.switch_tar()
         self.data_distribute(datadict)
         self.switch_tar()
         self.waitid("PRCSRQSTDLG_WRK_LOADPRCSRQSTDLGPB") #pressing the Run button
@@ -108,7 +113,7 @@ def main(USERNAME,PASSWORD,download_dir=None):
     thecjr=cjr(home.driver)
     thecjr.nav()
     thecjr.run_current()
-    thecjr.driver.quit()   #using quit instead of close because 2 windows.
+    #thecjr.driver.quit()   #using quit instead of close because 2 windows.
 
 if __name__ == "__main__":
     main(USERNAME,PASSWORD,download_dir=DIR)    
