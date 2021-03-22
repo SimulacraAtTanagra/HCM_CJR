@@ -4,8 +4,8 @@ Created on Thu Mar 11 17:02:20 2021
 
 @author: shane
 """
-from seltools import mydriver,main
-from HCM_main import hcm
+from src.seltools import mydriver,main
+from src.HCM_main import hcm
 from datetime import datetime
 from selenium.webdriver.common.by import By
 import os
